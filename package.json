@@ -1,0 +1,16 @@
+{
+  "name": "pos-system",
+  "version": "1.0.0",
+  "description": "Point of Sale MERN stack application",
+  "private": true,
+  "scripts": {
+    "server": "npm run dev --prefix server",
+    "client": "npm run dev --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "seed": "node server/seed.js"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
+
