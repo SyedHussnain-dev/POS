@@ -1,5 +1,5 @@
 import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 
 export const generateReceiptPDF = (receipt, action = 'download') => {
   // Receipt paper is usually 80mm width.
@@ -27,7 +27,7 @@ export const generateReceiptPDF = (receipt, action = 'download') => {
     `$${item.total.toFixed(2)}`
   ]);
 
-  doc.autoTable({
+  autoTable(doc, {
     startY: 28,
     head: [['Item', 'Qty', 'Price', 'Total']],
     body: tableData,
