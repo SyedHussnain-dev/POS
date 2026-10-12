@@ -57,7 +57,7 @@ export default function LockScreen() {
         {user && (
           <div className={styles.currentUserBadge}>
             <span className={styles.statusDot} />
-            Current: <strong>{user.name}</strong> ({user.role})
+            Current: <strong>{user.name}</strong>
           </div>
         )}
 

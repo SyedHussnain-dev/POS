@@ -173,17 +173,17 @@ export const deleteHeldCart = async (req, res) => {
   }
 };
 
-// ── Get Orders History ──
+// ── Get Orders History (scoped to current user) ──
 export const getOrders = async (req, res) => {
   try {
     const { status = 'COMPLETED', limit = 50 } = req.query;
-    const filter = {};
+    const filter = { cashierId: req.user._id };
     if (status !== 'ALL') {
       filter.status = status;
     }
 
     const orders = await Order.find(filter)
-      .populate('cashierId', 'name email role')
+      .populate('cashierId', 'name email')
       .sort({ createdAt: -1 })
       .limit(Number(limit));
 
@@ -193,11 +193,11 @@ export const getOrders = async (req, res) => {
   }
 };
 
-// ── Get Single Order ──
+// ── Get Single Order (scoped to current user) ──
 export const getOrderById = async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id)
-      .populate('cashierId', 'name email role')
+    const order = await Order.findOne({ _id: req.params.id, cashierId: req.user._id })
+      .populate('cashierId', 'name email')
       .populate('items.productId');
 
     if (!order) {
@@ -210,16 +210,16 @@ export const getOrderById = async (req, res) => {
   }
 };
 
-// ── Order / Dashboard Analytics ──
-export const getOrderStats = async (_req, res) => {
+// ── Order / Dashboard Analytics (scoped to current user) ──
+export const getOrderStats = async (req, res) => {
   try {
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
 
     const [todayOrders, allCompleted, recentOrders] = await Promise.all([
-      Order.find({ createdAt: { $gte: todayStart }, status: 'COMPLETED' }),
-      Order.find({ status: 'COMPLETED' }),
-      Order.find({ status: 'COMPLETED' }).sort({ createdAt: -1 }).limit(5),
+      Order.find({ createdAt: { $gte: todayStart }, status: 'COMPLETED', cashierId: req.user._id }),
+      Order.find({ status: 'COMPLETED', cashierId: req.user._id }),
+      Order.find({ status: 'COMPLETED', cashierId: req.user._id }).sort({ createdAt: -1 }).limit(5),
     ]);
 
     const todayRevenue = todayOrders.reduce((sum, o) => sum + (o.grandTotal || 0), 0);

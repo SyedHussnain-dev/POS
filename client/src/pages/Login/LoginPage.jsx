@@ -4,9 +4,9 @@ import { Store, Eye, EyeOff, Loader } from 'lucide-react';
 import styles from './LoginPage.module.css';
 
 const DEMO_ACCOUNTS = [
-  { label: 'Admin', email: 'admin@pos.com', password: 'AdminPassword123!', role: 'SUPER_ADMIN' },
-  { label: 'Manager', email: 'manager@pos.com', password: 'ManagerPassword123!', role: 'STORE_MANAGER' },
-  { label: 'Cashier', email: 'cashier@pos.com', password: 'CashierPassword123!', role: 'CASHIER' },
+  { label: 'System Admin', email: 'admin@pos.com', password: 'AdminPassword123!' },
+  { label: 'Store Manager', email: 'manager@pos.com', password: 'ManagerPassword123!' },
+  { label: 'Alex Cashier', email: 'cashier@pos.com', password: 'CashierPassword123!' },
 ];
 
 export default function LoginPage() {
@@ -107,7 +107,7 @@ export default function LoginPage() {
 
         <div className={styles.demoGrid}>
           {DEMO_ACCOUNTS.map((a) => (
-            <button key={a.role} className={styles.demoBtn} onClick={() => fillDemo(a)}>
+            <button key={a.email} className={styles.demoBtn} onClick={() => fillDemo(a)}>
               <span className={styles.demoRole}>{a.label}</span>
               <span className={styles.demoEmail}>{a.email}</span>
             </button>

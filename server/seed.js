@@ -18,7 +18,6 @@ import Receipt from './models/Receipt.js';
 // ── Demo Users from Spec ──
 const rawUsers = [
   {
-    role: 'SUPER_ADMIN',
     email: 'admin@pos.com',
     password: 'AdminPassword123!',
     pin: '1111',
@@ -26,7 +25,6 @@ const rawUsers = [
     avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
   },
   {
-    role: 'STORE_MANAGER',
     email: 'manager@pos.com',
     password: 'ManagerPassword123!',
     pin: '2222',
@@ -34,7 +32,6 @@ const rawUsers = [
     avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80',
   },
   {
-    role: 'CASHIER',
     email: 'cashier@pos.com',
     password: 'CashierPassword123!',
     pin: '3333',
@@ -237,8 +234,10 @@ async function seed() {
     const createdUsers = await User.insertMany(usersToInsert);
     console.log(`Seeded ${createdUsers.length} staff users with bcrypt passwords & PINs.`);
 
-    // ── Seed Products ──
-    const createdProducts = await Product.insertMany(productsData);
+    // ── Seed Products (assigned to cashier user) ──
+    const cashierUser = createdUsers.find((u) => u.email === 'cashier@pos.com');
+    const productsWithOwner = productsData.map((p) => ({ ...p, userId: cashierUser._id }));
+    const createdProducts = await Product.insertMany(productsWithOwner);
     console.log(`Seeded ${createdProducts.length} products across 5 categories.`);
 
     // Also populate legacy Item collection for backwards compatibility
@@ -253,7 +252,6 @@ async function seed() {
     console.log(`Synced ${legacyItems.length} items to legacy collection.`);
 
     // ── Seed Initial Open Shift for Alex Cashier ──
-    const cashierUser = createdUsers.find((u) => u.role === 'CASHIER');
     const shift = await Shift.create({
       cashierId: cashierUser._id,
       openingTime: new Date(Date.now() - 4 * 60 * 60 * 1000), // opened 4 hours ago

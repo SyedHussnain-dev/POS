@@ -1,19 +1,19 @@
 :root {
-  /* ── RestroBit warm glass palette ── */
-  --slate-950: #fffaf7;
-  --slate-900: #fff4ed;
-  --slate-800: #ffe5d3;
-  --slate-700: #f8c8ad;
-  --slate-600: #d98a62;
-  --slate-500: #a75132;
-  --slate-400: #803619;
-  --slate-300: #5e2715;
-  --slate-200: #4a1c11;
-  --slate-100: #36120a;
-  --slate-50:  #2a0e08;
+  /* ── Clean warm palette ── */
+  --slate-50:  #fbf7f4;
+  --slate-100: #f3ebe4;
+  --slate-200: #e6d6c9;
+  --slate-300: #c9a98f;
+  --slate-400: #8a6a52;
+  --slate-500: #6b4d36;
+  --slate-600: #523826;
+  --slate-700: #3d2a1c;
+  --slate-800: #2a1c12;
+  --slate-900: #1a110b;
+  --slate-950: #0f0a06;
 
-  --cyan-400:  #ffb088;
-  --cyan-500:  #f97316;
+  --cyan-400:  #f59e5c;
+  --cyan-500:  #ea580c;
   --blue-400:  #fb923c;
   --blue-500:  #f97316;
   --blue-600:  #ea580c;
@@ -23,16 +23,16 @@
   --violet:    #9a3412;
   --sky:       #f97316;
 
-  /* ── Semantic Aliases (kept for compatibility) ── */
+  /* ── Semantic Aliases ── */
   --color-primary:        var(--sky);
-  --color-primary-strong: var(--slate-900);
-  --color-primary-soft:   #ffeadb;
+  --color-primary-strong: #ea580c;
+  --color-primary-soft:   #fff1e6;
   --color-accent:         #f97316;
-  --color-surface:        #fffaf7;
-  --color-surface-muted:  #fff1e7;
-  --color-text:           #2a0e08;
-  --color-text-muted:     #803619;
-  --color-border:         #f3c5ab;
+  --color-surface:        #fbf7f4;
+  --color-surface-muted:  #f3ebe4;
+  --color-text:           #1a110b;
+  --color-text-muted:     #6b4d36;
+  --color-border:         #e6d6c9;
   --color-success:        var(--emerald);
   --color-warning:        var(--amber);
   --color-danger:         var(--rose);
@@ -82,5 +82,5 @@
 
 ::selection {
   background-color: #ffdcc7;
-  color: #2a0e08;
+  color: #1a110b;
 }

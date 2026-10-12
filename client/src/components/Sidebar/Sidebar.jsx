@@ -30,7 +30,7 @@ export default function Sidebar() {
       {!collapsed && user && (
         <div className={styles.profile}>
           {user.avatarUrl ? <img src={user.avatarUrl} alt="" className={styles.profileAvatar} /> : <span className={styles.profileFallback}>{user.name?.[0]}</span>}
-          <span><strong>{user.name}</strong><small>{user.role.replaceAll('_', ' ')}</small></span>
+          <span><strong>{user.name}</strong><small>{user.email}</small></span>
         </div>
       )}
 

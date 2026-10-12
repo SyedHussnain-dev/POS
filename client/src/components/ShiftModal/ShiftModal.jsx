@@ -64,7 +64,7 @@ export default function ShiftModal({ isOpen, onClose }) {
           <div>
             <h3 className={styles.title}>Register & Shift Control</h3>
             <p className={styles.subtitle}>
-              Cashier: <strong>{user?.name || 'Active Cashier'}</strong> ({user?.role || 'Staff'})
+              Cashier: <strong>{user?.name || 'Active Cashier'}</strong>
             </p>
           </div>
           <button className={styles.closeBtn} onClick={onClose}>✕</button>

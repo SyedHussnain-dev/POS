@@ -1,10 +1,10 @@
 import Product from '../models/Product.js';
 
-// ── Get all products with filters ──
+// ── Get all products with filters (scoped to current user) ──
 export const getProducts = async (req, res) => {
   try {
     const { search, category, lowStock, availableOnly } = req.query;
-    const filter = {};
+    const filter = { userId: req.user._id };
 
     if (availableOnly === 'true') {
       filter.isAvailable = true;
@@ -33,10 +33,10 @@ export const getProducts = async (req, res) => {
   }
 };
 
-// ── Get single product ──
+// ── Get single product (scoped to current user) ──
 export const getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findOne({ _id: req.params.id, userId: req.user._id });
     if (!product) {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }
@@ -46,10 +46,10 @@ export const getProductById = async (req, res) => {
   }
 };
 
-// ── Lookup product by barcode ──
+// ── Lookup product by barcode (scoped to current user) ──
 export const getProductByBarcode = async (req, res) => {
   try {
-    const product = await Product.findOne({ barcode: req.params.barcode });
+    const product = await Product.findOne({ barcode: req.params.barcode, userId: req.user._id });
     if (!product) {
       return res.status(404).json({ success: false, message: 'No product matched this barcode' });
     }
@@ -59,23 +59,24 @@ export const getProductByBarcode = async (req, res) => {
   }
 };
 
-// ── Create product ──
+// ── Create product (owned by current user) ──
 export const createProduct = async (req, res) => {
   try {
-    const product = await Product.create(req.body);
+    const product = await Product.create({ ...req.body, userId: req.user._id });
     res.status(201).json({ success: true, data: product });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
   }
 };
 
-// ── Update product ──
+// ── Update product (scoped to current user) ──
 export const updateProduct = async (req, res) => {
   try {
-    const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const product = await Product.findOneAndUpdate(
+      { _id: req.params.id, userId: req.user._id },
+      req.body,
+      { new: true, runValidators: true }
+    );
     if (!product) {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }
@@ -85,10 +86,10 @@ export const updateProduct = async (req, res) => {
   }
 };
 
-// ── Delete product ──
+// ── Delete product (scoped to current user) ──
 export const deleteProduct = async (req, res) => {
   try {
-    const product = await Product.findByIdAndDelete(req.params.id);
+    const product = await Product.findOneAndDelete({ _id: req.params.id, userId: req.user._id });
     if (!product) {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }
@@ -98,10 +99,11 @@ export const deleteProduct = async (req, res) => {
   }
 };
 
-// ── Low stock alert stats ──
-export const getStockAlerts = async (_req, res) => {
+// ── Low stock alert stats (scoped to current user) ──
+export const getStockAlerts = async (req, res) => {
   try {
     const lowStockItems = await Product.find({
+      userId: req.user._id,
       $expr: { $lte: ['$stockQuantity', '$reorderLevel'] },
     }).sort({ stockQuantity: 1 });
 

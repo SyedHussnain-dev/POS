@@ -52,7 +52,7 @@ export const getCurrentShift = async (req, res) => {
     let filter = { status: 'OPEN' };
     if (cashierId) filter.cashierId = cashierId;
 
-    const shift = await Shift.findOne(filter).populate('cashierId', 'name email role');
+    const shift = await Shift.findOne(filter).populate('cashierId', 'name email');
     if (!shift) {
       return res.json({ success: true, data: null, message: 'No open shift found' });
     }
@@ -180,7 +180,7 @@ export const closeShift = async (req, res) => {
 export const getShiftHistory = async (req, res) => {
   try {
     const shifts = await Shift.find()
-      .populate('cashierId', 'name email role')
+      .populate('cashierId', 'name email')
       .sort({ createdAt: -1 })
       .limit(50);
 

@@ -7,11 +7,6 @@ const userSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, required: true },
     pin: { type: String, required: true, minlength: 4, maxlength: 72 },
-    role: {
-      type: String,
-      enum: ['SUPER_ADMIN', 'STORE_MANAGER', 'CASHIER', 'INVENTORY_SPECIALIST'],
-      default: 'CASHIER',
-    },
     avatarUrl: { type: String },
     activeShiftId: { type: mongoose.Schema.Types.ObjectId, ref: 'Shift', default: null },
   },

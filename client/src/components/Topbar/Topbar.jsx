@@ -67,7 +67,6 @@ export default function Topbar() {
             )}
             <div className={styles.userText}>
               <span className={styles.userName}>{user.name}</span>
-              <span className={styles.userRole}>{user.role.replace('_', ' ')}</span>
             </div>
           </div>
         )}

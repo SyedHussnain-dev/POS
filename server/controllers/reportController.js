@@ -30,7 +30,7 @@ export const getSalesReport = async (req, res) => {
 
 export const getZReports = async (_req, res) => {
   try {
-    const shifts = await Shift.find({ status: 'CLOSED' }).populate('cashierId', 'name email role').sort({ closingTime: -1 }).limit(50);
+    const shifts = await Shift.find({ status: 'CLOSED' }).populate('cashierId', 'name email').sort({ closingTime: -1 }).limit(50);
     res.json({ success: true, count: shifts.length, data: shifts });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

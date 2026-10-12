@@ -41,7 +41,6 @@ export const login = async (req, res) => {
           id: user._id,
           name: user.name,
           email: user.email,
-          role: user.role,
           avatarUrl: user.avatarUrl,
           activeShiftId: user.activeShiftId,
           activeShift,
@@ -85,7 +84,6 @@ export const pinSwitch = async (req, res) => {
           id: user._id,
           name: user.name,
           email: user.email,
-          role: user.role,
           avatarUrl: user.avatarUrl,
           activeShiftId: user.activeShiftId,
           activeShift,
@@ -100,7 +98,7 @@ export const pinSwitch = async (req, res) => {
 // ── Current User Profile ──
 export const getMe = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password');
+    const user = await User.findById(req.user.id).select('-password -role -pin');
     let activeShift = null;
     if (user.activeShiftId) {
       activeShift = await Shift.findById(user.activeShiftId);
@@ -121,7 +119,7 @@ export const getMe = async (req, res) => {
 // ── List All Active Staff ──
 export const getStaff = async (_req, res) => {
   try {
-    const staff = await User.find().select('name email role avatarUrl activeShiftId');
+    const staff = await User.find().select('name email avatarUrl activeShiftId');
     res.json({ success: true, data: staff });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

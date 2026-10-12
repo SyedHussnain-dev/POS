@@ -1,6 +1,6 @@
 .layout {
   min-height: 100vh;
-  background: var(--slate-950);
+  background: var(--color-surface);
 }
 
 .main {
@@ -10,4 +10,4 @@
   min-height: calc(100vh - var(--topbar-height));
 }
 
-.layout { background: radial-gradient(circle at 6% 5%, rgba(255,196,160,.45), transparent 30rem), var(--slate-950); }
+.layout { background: radial-gradient(circle at 6% 5%, rgba(255,196,160,.25), transparent 30rem), var(--color-surface); }
