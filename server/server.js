@@ -11,8 +11,39 @@ connectDB();
 const app = express();
 
 // ── Middleware ──
-app.use(cors({ origin: process.env.CLIENT_URL || '*' }));
+const allowedOrigins = process.env.CLIENT_URL
+  ? process.env.CLIENT_URL.split(',').map((url) => url.trim().replace(/\/+$/, ''))
+  : ['*'];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes('*')) {
+        return callback(null, true);
+      }
+      const cleanOrigin = origin.replace(/\/+$/, '');
+      if (
+        allowedOrigins.includes(cleanOrigin) ||
+        cleanOrigin.endsWith('.vercel.app') ||
+        cleanOrigin.includes('localhost')
+      ) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
+
+// ── Health Check ──
+app.get('/', (_req, res) => {
+  res.json({ success: true, message: 'POS Backend API is running' });
+});
+
+app.get('/api/health', (_req, res) => {
+  res.json({ success: true, status: 'healthy', timestamp: new Date().toISOString() });
+});
 
 // ── Routes ──
 app.use('/api/items', itemRoutes);
