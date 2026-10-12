@@ -1,9 +1,19 @@
-import 'dotenv/config';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
 import express from 'express';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.join(__dirname, '.env') });
+dotenv.config();
 import cors from 'cors';
 import connectDB from './config/db.js';
 import itemRoutes from './routes/itemRoutes.js';
 import receiptRoutes from './routes/receiptRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import productRoutes from './routes/productRoutes.js';
+import shiftRoutes from './routes/shiftRoutes.js';
+import orderRoutes from './routes/orderRoutes.js';
 
 // ── Connect to database ──
 connectDB();
@@ -46,6 +56,10 @@ app.get('/api/health', (_req, res) => {
 });
 
 // ── Routes ──
+app.use('/api/auth', authRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/shifts', shiftRoutes);
+app.use('/api/orders', orderRoutes);
 app.use('/api/items', itemRoutes);
 app.use('/api/receipts', receiptRoutes);
 
