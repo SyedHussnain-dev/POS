@@ -8,13 +8,12 @@ const routeTitles = {
   '/dashboard': 'Dashboard',
   '/pos': 'POS Terminal',
   '/items': 'Items',
-  '/customers': 'Customers',
   '/receipts': 'Receipts',
 };
 
 function Topbar() {
   const location = useLocation();
-  const [dateTime, setDateTime] = useState(new Date());
+  const [dateTime, setDateTime] = useState(() => new Date());
 
   useEffect(() => {
     const timer = setInterval(() => setDateTime(new Date()), 60000);
