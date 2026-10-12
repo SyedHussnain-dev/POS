@@ -111,3 +111,8 @@
   background: rgba(255,255,255,0.06);
   color: var(--slate-300);
 }
+
+.profile { display:flex; align-items:center; gap:9px; padding:10px 8px 18px; color:#ffe8dc; }.profileAvatar,.profileFallback { width:32px; height:32px; border-radius:50%; object-fit:cover; background:#f97316; display:grid; place-items:center; color:#fff; font-size:12px; }.profile strong,.profile small { display:block; }.profile strong { font-size:12px; font-weight:600; }.profile small { margin-top:2px; font-size:9px; color:#f9b99a; }.logoutBtn { margin-top:8px; min-height:36px; width:100%; text-align:left; padding:0 10px; border-radius:var(--radius-md); color:#fecdb4; font-size:13px; font-weight:600; }.logoutBtn:hover { background:rgba(255,255,255,.08); color:#fff7f2; }
+
+/* ── RestroBit navigation ── */
+.sidebar { background: rgba(72, 24, 12, .95); border-color: rgba(255, 197, 163, .18); box-shadow: 10px 0 30px rgba(81, 28, 10, .14); }.brand { border-color: rgba(255, 213, 187, .16); }.logoMark { background: linear-gradient(135deg, #fb923c, #ea580c); box-shadow: 0 6px 16px rgba(234,88,12,.35); }.brandText { color: #fff7f2; }.link { color: #fecdb4; }.link:hover { background: rgba(255,255,255,.08); color:#fff7f2; }.active { background: linear-gradient(135deg,#f97316,#ea580c); color: #fff; border-color: transparent; box-shadow:0 8px 18px rgba(234,88,12,.28); }.active .linkIcon { color:#fff; }.collapseBtn { color:#fecdb4; border-color:rgba(255,213,187,.2); }.collapseBtn:hover { background:rgba(255,255,255,.08); color:#fff7f2; }

@@ -1,44 +1,45 @@
 :root {
-  /* ── Dark Glassmorphic Palette ── */
-  --slate-950: #020617;
-  --slate-900: #0f172a;
-  --slate-800: #1e293b;
-  --slate-700: #334155;
-  --slate-600: #475569;
-  --slate-500: #64748b;
-  --slate-400: #94a3b8;
-  --slate-300: #cbd5e1;
-  --slate-100: #f1f5f9;
-  --slate-50:  #f8fafc;
+  /* ── RestroBit warm glass palette ── */
+  --slate-950: #fffaf7;
+  --slate-900: #fff4ed;
+  --slate-800: #ffe5d3;
+  --slate-700: #f8c8ad;
+  --slate-600: #d98a62;
+  --slate-500: #a75132;
+  --slate-400: #803619;
+  --slate-300: #5e2715;
+  --slate-200: #4a1c11;
+  --slate-100: #36120a;
+  --slate-50:  #2a0e08;
 
-  --cyan-400:  #22d3ee;
-  --cyan-500:  #06b6d4;
-  --blue-400:  #60a5fa;
-  --blue-500:  #3b82f6;
-  --blue-600:  #2563eb;
-  --emerald:   #10b981;
-  --amber:     #f59e0b;
-  --rose:      #f43f5e;
-  --violet:    #8b5cf6;
-  --sky:       #38bdf8;
+  --cyan-400:  #ffb088;
+  --cyan-500:  #f97316;
+  --blue-400:  #fb923c;
+  --blue-500:  #f97316;
+  --blue-600:  #ea580c;
+  --emerald:   #16a34a;
+  --amber:     #d97706;
+  --rose:      #dc2626;
+  --violet:    #9a3412;
+  --sky:       #f97316;
 
   /* ── Semantic Aliases (kept for compatibility) ── */
   --color-primary:        var(--sky);
   --color-primary-strong: var(--slate-900);
-  --color-primary-soft:   #bae6fd;
-  --color-accent:         var(--violet);
-  --color-surface:        var(--slate-800);
-  --color-surface-muted:  var(--slate-700);
-  --color-text:           var(--slate-50);
-  --color-text-muted:     var(--slate-400);
-  --color-border:         rgba(255, 255, 255, 0.1);
+  --color-primary-soft:   #ffeadb;
+  --color-accent:         #f97316;
+  --color-surface:        #fffaf7;
+  --color-surface-muted:  #fff1e7;
+  --color-text:           #2a0e08;
+  --color-text-muted:     #803619;
+  --color-border:         #f3c5ab;
   --color-success:        var(--emerald);
   --color-warning:        var(--amber);
   --color-danger:         var(--rose);
   --color-white:          #ffffff;
 
   /* ── Typography ── */
-  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-family: 'Manrope', system-ui, -apple-system, sans-serif;
   --font-mono:   ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
   --font-weight-light:    300;
   --font-weight-regular:  400;
@@ -58,28 +59,28 @@
   /* ── Radii ── */
   --radius-sm:   6px;
   --radius-md:   12px;
-  --radius-lg:   18px;
-  --radius-xl:   24px;
+  --radius-lg:   16px;
+  --radius-xl:   20px;
   --radius-pill: 999px;
 
   /* ── Motion ── */
   --motion-fast:   120ms;
-  --motion-normal: 200ms;
-  --motion-slow:   320ms;
+  --motion-normal: 180ms;
+  --motion-slow:   260ms;
 
   /* ── Layout ── */
   --sidebar-width:     240px;
   --topbar-height:     64px;
 
   /* ── Glass Effects ── */
-  --glass-bg:    rgba(30, 41, 59, 0.75);
-  --glass-border:rgba(255, 255, 255, 0.08);
+  --glass-bg:    rgba(255, 255, 255, 0.72);
+  --glass-border:rgba(255, 255, 255, 0.68);
   --glass-blur:  blur(16px);
-  --shadow-lg:   0 20px 40px -12px rgba(0,0,0,0.6);
-  --shadow-glow: 0 0 24px rgba(56, 189, 248, 0.25);
+  --shadow-lg:   0 20px 42px -20px rgba(108, 39, 13, 0.28);
+  --shadow-glow: 0 0 24px rgba(249, 115, 22, 0.2);
 }
 
 ::selection {
-  background-color: rgba(56,189,248,0.3);
-  color: #f8fafc;
+  background-color: #ffdcc7;
+  color: #2a0e08;
 }

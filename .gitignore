@@ -6,3 +6,12 @@ dist
 .DS_Store
 next_gen_pos_plan.md
 .gitignore
+
+node --input-type=module -e 'const base="http://127.0.0.1:5001/api"; const auth=async(email,password)=>{const r=await fetch(`${base}/auth/login`,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({email,password})});const j=await r.json();if(!r.ok)throw new Error(j.message);return {authorization:`Bearer ${j.data.token}`}}; const [cashier,manager]=await Promise.all([auth("cashier@pos.com","CashierPassword123!"),auth("manager@pos.com","ManagerPassword123!")]); const [held,orders,stats,reports,zReports,pin]=await Promise.all([fetch(`${base}/orders/held`,{headers:cashier}),fetch(`${base}/orders`,{headers:cashier}),fetch(`${base}/orders/stats`,{headers:cashier}),fetch(`${base}/reports/sales`,{headers:manager}),fetch(`${base}/reports/z-reports`,{headers:manager}),fetch(`${base}/auth/pin-switch`,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({pin:"3333"})})]); const results={held:held.status,orders:orders.status,stats:stats.status,reports:reports.status,zReports:zReports.status,pinSwitch:pin.status}; if(Object.values(results).some(status=>status!==200))throw new Error(JSON.stringify(results)); console.log(JSON.stringify(results));'
+￼Expand
+￼Deny
+￼
+Allow once
+￼
+￼
+DESIGN.md

@@ -142,3 +142,6 @@
   color: var(--rose);
   border-color: rgba(244,63,94,0.2);
 }
+
+/* ── RestroBit command bar ── */
+.topbar { background: rgba(255,250,247,.84); border-color: rgba(235,161,120,.32); box-shadow: 0 5px 18px rgba(108,39,13,.06); }.title { color:#4a1c11; }.shiftBadge { color:#15803d; background:#ecfdf3; border-color:#b7ebc8; }.shiftBadgeWarning { color:#b45309; background:#fff8e6; border-color:#f9d884; }.dateTime { color:#8b4d31; }.userInfo { background:#fff; border-color:#f1d3c1; }.userName { color:#4a1c11; }.userRole { color:#a05b3d; }.avatarFallback { background:linear-gradient(135deg,#fb923c,#ea580c); }.iconBtn { color:#8b4d31; }.iconBtn:hover { background:#fff0e8; color:#c2410c; border-color:#f2c6ae; }.iconBtnDanger:hover { background:#fff0f0; color:#dc2626; border-color:#fecaca; }

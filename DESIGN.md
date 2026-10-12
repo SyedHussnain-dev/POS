@@ -5,18 +5,18 @@ description: "Framework-agnostic design rules for web and mobile app implementat
 # ─── Colors ───────────────────────────────────────────────
 colors:
   # Brand
-  primary:       "#3282b8"
-  primaryStrong: "#1b262c"
-  primarySoft:   "#bbe1fa"
-  accent:        "#3282b8"
+  primary:       "#66bfbf"
+  primaryStrong: "#1f4f50"
+  primarySoft:   "#ddf7f7"
+  accent:        "#66bfbf"
 
   # Surfaces
-  surface:       "#eff8ff"
-  surfaceMuted:  "#bbe1fa"
+  surface:       "#f6ffff"
+  surfaceMuted:  "#ddf7f7"
 
   # Text & Border
-  text:          "#0b1820"
-  border:        "#0f4c75"
+  text:          "#1f4f50"
+  border:        "#49a3a3"
 
   # Feedback
   success:       "#16A34A"
@@ -25,12 +25,12 @@ colors:
 
 # ─── Typography ───────────────────────────────────────────
 typography:
-  family:        "Source Sans 3, system-ui, sans-serif"
-  displayFamily: "Source Sans 3, system-ui, sans-serif"
+  family:        "Manrope, system-ui, sans-serif"
+  displayFamily: "Manrope, system-ui, sans-serif"
   monoFamily:    "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace"
-  source:        "Optional Google Font: https://fonts.google.com/specimen/Source+Sans+3"
+  source:        "Optional Google Font: https://fonts.google.com/specimen/Manrope"
   weights:       "300, 400, 500, 600"
-  defaultWeight: 500
+  defaultWeight: 600
   tone:          "sans"
 
 # Spacing
@@ -95,109 +95,112 @@ This file is a portable design skill. Any AI or engineer should be able to read 
 7. Verify desktop and mobile before finishing.
 
 ## Visual Direction
-- Color direction: Abyss Blue - Deep focused contrast.
-- Typography direction: Source Readable - Docs and settings.
-- Style direction: Dashboard - Operational SaaS dashboards with KPI cards, chart panels, side rails, filters, and fast scanning
-- References: Finance analytics dashboards, SaaS admin consoles, Dark sales dashboards, Property management dashboards, Audience reporting tools.
-- Visual style: Abyss Blue color direction, Source Readable typography, Dashboard style.
+- Color direction: Mint Frost - Fresh airy product UI.
+- Typography direction: Mobile Grotesk - Polished app UI.
+- Style direction: Glassmorphism - Frosted panels over gradients, glow, imagery, and layered UI surfaces
+- References: Frosted glass interfaces, Dark luminous SaaS heroes, gradient finance cards, Windows acrylic menus, blurred UI panels over imagery, minimal glass effect demos.
+- Visual style: Mint Frost color direction, Mobile Grotesk typography, Glassmorphism style.
 
-## Style System: Dashboard
-Use Dashboard to create operational product interfaces where users monitor metrics, compare trends, manage records, and take quick contextual actions. The style is built around KPI cards, sparklines, chart panels, map/report widgets, side navigation, topbar search, filters, profile controls, and compact status chips. It works best for finance, sales, property, marketing, analytics, admin, CRM, and project dashboards. The result should feel like a real app surface, not a landing page: dense enough to work, calm enough to scan.
+## Style System: Glassmorphism
+Use Glassmorphism to create a frosted interface where translucent panels, blurred backgrounds, soft gradients, luminous color fields, and thin borders make the UI feel layered and premium. Unlike Liquid Glass, this style is not about refractive blobs or adaptive material physics; it is about clean acrylic panels, glass cards, glass navigation, floating finance cards, app menus, and dark or colorful hero sections with readable frosted surfaces.
 
 ### Layout Rules
-- use a real app shell: sidebar or icon rail, topbar with search and profile actions, then a structured dashboard grid.
-- start with compact KPI cards for immediate overview; each card should include label, value, trend, and optional sparkline or icon.
-- use a 12-column or 16-column grid to mix compact stat cards, wide charts, medium widgets, and narrow side panels.
-- reserve the largest center area for the primary chart, map, timeline, or report; supporting widgets should wrap around it.
-- keep light dashboards on soft gray or off-white backgrounds with white cards and subtle shadow; use dark mode only when the product needs a pro/monitoring feel.
-- use rounded cards consistently, but avoid decorative card nesting; widgets are cards, page sections are layout regions.
-- place filters, date pickers, view toggles, export actions, and overflow menus inside or above the data panel they control.
-- mobile layout should stack by priority: header/search, KPI strip, primary chart, urgent tasks/events, then secondary widgets.
+- start with a controlled depth background: dark neutral canvas, purple or blue gradient, soft radial glow, product image, landscape photo, or abstract orb field.
+- use frosted panels as stable UI containers: nav bars, hero cards, app menus, payment cards, pricing slabs, feature panels, floating toolbars, dialogs, and sidebars.
+- compose the first viewport around a readable headline and one or two translucent surfaces; the background can glow, but content must remain sharp.
+- glass panels should usually be rectangular or rounded rectangles with consistent alignment, not irregular liquid shapes.
+- place vivid gradients, blurred circles, product artwork, or photography behind glass so the blur effect has visible depth.
+- use translucent cards to reveal context behind them, such as a card over a gradient, a menu over a desktop wallpaper, or CTA controls over a dark hero.
+- reserve solid or near-solid sections for long-form text, dense tables, docs, forms, and anything that needs reading comfort.
+- on mobile, reduce the number of overlapping translucent layers and stack glass panels in a simple vertical order.
 
 ### Component Patterns
-- metric cards must display one primary number, one label, one trend indicator, and optional sparkline; avoid mixing multiple unrelated metrics in one card.
-- charts should have clear titles, axis context, legends, hover markers, selected points, and empty/loading states.
-- large chart cards can include date selectors, segmented filters, export buttons, view menus, fullscreen buttons, and contextual legends.
-- tables and activity lists should use clear row rhythm, stable columns, avatars or icons where useful, and visible sort/filter affordances.
-- sidebars should group navigation into sections, show active state clearly, and support compact icon-rail mode.
-- topbar search should be visible but visually quiet; notification, settings, and profile actions belong at the right edge.
-- status indicators should use color consistently: green for positive, red for negative, amber for warning, blue/purple for neutral activity, gray for inactive.
-- empty states should stay inside their card, preserve card height, and offer one clear next action.
+- each frosted component needs a repeatable recipe: semi-transparent fill, backdrop blur, thin border, soft shadow, and optional inner highlight.
+- glass navigation should use enough tint and separation that links, active states, menus, and profile controls remain readable over dark or image backgrounds.
+- hero glass panels should support the headline and CTA; use a dark or light scrim when text crosses bright gradients or busy imagery.
+- payment cards, account cards, or product cards can use glass with visible numbers, logos, labels, and subtle diagonal shine.
+- Windows-style acrylic menus should feel calm and functional: dark translucent panel, clear app/icon grid, readable labels, and subtle blue or system-color depth.
+- primary buttons inside glass surfaces need stronger fill, brighter border, or glow than secondary buttons.
+- forms need stable field backgrounds, visible labels, helper text, error text, and focus rings; avoid fully transparent inputs.
+- dialogs, popovers, menus, and sheets should use stronger opacity than decorative glass cards because they contain decisions.
+- provide solid-color fallback surfaces when backdrop-filter or blur is unsupported.
 
 ### Existing Project Refactor Rules
-- inventory the existing interface first: navigation, metrics, charts, tables, filters, actions, and settings.
-- preserve all data points and map them to appropriate dashboard widgets: KPI, chart, table, list, profile, calendar, map, or status panel.
-- do not remove data or metrics to simplify the layout; reorganize and prioritize instead.
-- patch card sizes, grid spans, spacing, and visual hierarchy section by section.
-- if a section has too much data for one card, split it into related widgets with one clear purpose each.
-- when adding chart placeholders, include labels, axes, legends, selected value markers, and realistic loading/empty states.
-- if the product has no metrics or data, use a different style — Dashboard requires content to work.
-- preserve filter, sort, and action capabilities on all data views.
-- when restyling an existing dashboard, keep user workflow speed: do not hide primary filters, search, create actions, or drill-down paths.
+- inventory the existing product before styling: hero, navigation, CTAs, forms, cards, pricing, testimonials, media, routes, and footer.
+- preserve every existing section and decide whether it becomes a glass overlay, a solid content band, a media-backed hero, or a plain readable section.
+- do not convert dense text, tables, docs, or long forms into weak translucent panels when a stable surface is clearer.
+- patch backgrounds, overlays, borders, blur, and state styles section by section instead of rewriting the whole page.
+- if the existing page is plain, add depth behind glass first through gradient fields, blurred color circles, product artwork, or photography; do not add transparent panels over a flat empty background.
+- when restyling a page with strong imagery, add scrims or tinted overlays before placing text on top of the image.
+- when restyling a dark SaaS page, use glow and glass to frame the product surface, but keep the UI screenshot or main workflow visible.
+- when restyling a finance or product landing page, let glass cards carry concrete content such as card numbers, plan names, metrics, or feature labels rather than generic decoration.
+- after each glass change, verify that original copy, CTAs, icons, media, form fields, and navigation remain visible and reachable.
+- if content starts disappearing, inspect contrast, opacity, z-index, filter, and inherited text color before deleting or rebuilding sections.
 
 ### Spacing Rules
-- use tight, efficient spacing: 8px to 12px between related items, 16px to 24px between card groups.
-- card padding should be 18px to 28px for standard widgets, 12px to 18px for compact KPI cards.
-- page padding should be 24px to 32px on desktop, 16px to 20px on mobile.
-- keep gutters consistent at 16px to 24px in the main grid.
-- use a max width of 1440px to 1680px for large dashboards; full-width layouts are acceptable for dense monitoring views.
-- sidebar width should be 220px to 280px, collapsible to a 64px to 84px icon rail on smaller or data-heavy screens.
-- topbar height should stay compact: 56px to 72px, with controls aligned to a stable baseline.
-- avoid excessive whitespace that pushes important data below the fold.
+- use 12px to 16px padding for compact nav/menu glass, 18px to 28px for cards and panels, and 32px to 56px for large hero glass surfaces.
+- leave visible negative space around frosted panels so shadow, blur, and glow can separate them from the background.
+- keep glass navigation compact and aligned; frosted chrome should feel light, not oversized.
+- use consistent gutters and alignment even when panels overlap gradients, photos, or abstract glow fields.
+- avoid stacking glass card inside glass card; use internal spacing, separators, or subtle tint shifts instead.
+- large glass cards need enough internal padding for labels, metadata, CTA groups, and icons to remain readable.
+- reserve full-width solid or near-solid bands for content-heavy sections that need reading comfort.
+- keep panel dimensions stable so loading states, hover states, and blur effects do not shift layout.
 
 ### Visual Hierarchy Rules
-- make numbers and chart shapes the visual anchors; chrome, navigation, and controls should remain quieter.
-- use soft elevation, pale borders, or tonal surfaces to separate cards from the app background.
-- primary actions should be compact, contextual, and easy to find near the data they affect.
-- use consistent typography: page title, section title, card title, metric number, label, and microcopy should each have a stable role.
-- trend indicators must be immediately visible and paired with labels, arrows, or signs so color is not the only signal.
-- chart titles, legends, axes, selected values, and date ranges should be scannable without zooming.
-- light mode should feel airy and financial/productive; dark mode should feel focused, with restrained neon accents for live/positive values.
+- use background brightness, blur strength, tint, border, and glow to separate background, glass, and foreground text.
+- keep the hero message and primary CTA on the clearest part of the composition.
+- use accent glow for primary actions, active nav items, selected cards, payment cards, or the main product focal point, not every panel.
+- let gradients, photography, and product art create atmosphere while typography and spacing carry hierarchy.
+- avoid placing body copy over high-frequency imagery, bright highlights, or complex gradients without a readable scrim.
+- use stronger frosted surfaces for important information such as prices, dates, card numbers, form values, errors, and confirmations.
+- keep glass panels lighter than the content they contain: text, icons, CTAs, and data must be sharper than the frosted layer.
+- maintain focus rings that are visible on glass, dark backgrounds, and image-backed areas.
 
 ### Style Anti-patterns
-- use decorative elements that compete with data for attention.
-- hide important metrics below the fold without a clear scroll path.
-- use inconsistent card sizes or spacing that makes the grid feel random.
-- add animations or effects that slow down data scanning.
-- use low-contrast text for labels or data values.
-- overload a single card with too many data points or charts.
-- use landing-page hero patterns, oversized marketing copy, or decorative illustrations in place of useful dashboard content.
-- remove filters, legends, table controls, or drill-down affordances to make the interface look cleaner.
+- turn the page into a grid of identical glass cards just because Bento uses modules.
+- place text directly on busy translucent backgrounds without a scrim or stable panel.
+- use blur as a substitute for layout, hierarchy, or content grouping.
+- make every section translucent until depth loses meaning.
+- depend on backdrop-filter without a readable fallback.
+- hide real media, CTA paths, forms, or navigation behind decorative glow.
+- use low-opacity white text on light glass or low-opacity dark text on dark glass.
+- imitate Liquid Glass with irregular refractive blobs, specular lens distortion, or physics-like material when this style should be frosted acrylic.
 
 ### Style Checklist
-- summary metrics are visible in the first viewport.
-- charts and tables have clear labels, legends, and context.
-- card layout is consistent and scannable.
-- filters and actions are placed near the data they control.
-- color is used semantically for status and trends.
-- the page feels data-dense but not cluttered.
-- mobile layout prioritizes the most important data.
-- the app shell includes sensible navigation, search, profile/notification actions, and responsive behavior.
-- every widget has a clear purpose: KPI, chart, list, map, profile, schedule, status, or action panel.
+- the first viewport has a clear product or place signal, headline, supporting copy, and primary CTA.
+- the background provides visible depth through gradient, glow, imagery, product art, or wallpaper-like context.
+- all text on glass surfaces meets contrast against the final rendered background.
+- each translucent panel has a visible edge through tint, border, highlight, or shadow.
+- existing content, forms, media, CTAs, navigation, and routes remain present.
+- the UI still works when blur support is unavailable.
+- mobile views simplify glass effects when space or readability suffers.
+- the result reads as atmospheric frosted acrylic glass, not a generic card grid or Liquid Glass blob system.
+- focus, error, selected, hover, disabled, and loading states remain visible above the glass effect.
 
 ## Design Tokens
 Use semantic tokens first. Raw values from frontmatter are source values, not permission to scatter hex codes or one-off sizes through implementation.
 
 ### Color
-- Primary action color: #3282b8.
-- Strong primary: #1b262c. Use for high-emphasis text, selected state, or strong borders.
-- Soft primary: #bbe1fa. Use for subtle surfaces, selected backgrounds, or calm highlights.
-- Surface: #eff8ff.
-- Muted surface: #bbe1fa.
-- Text: #0b1820.
-- Border: #0f4c75.
+- Primary action color: #66bfbf.
+- Strong primary: #1f4f50. Use for high-emphasis text, selected state, or strong borders.
+- Soft primary: #ddf7f7. Use for subtle surfaces, selected backgrounds, or calm highlights.
+- Surface: #f6ffff.
+- Muted surface: #ddf7f7.
+- Text: #1f4f50.
+- Border: #49a3a3.
 - Success, warning, and danger are semantic states. Pair them with labels, icons, or position; never rely on color alone.
 - When moving from a dark theme to a light or warm theme, update inherited light text classes such as white, muted-white, or low-opacity foregrounds.
 - Do not apply one warm/cream/brown palette across the entire page without contrast, hierarchy, and content anchors.
 
 ### Text Selection
-- Use this style-specific `::selection` treatment for Dashboard. It should follow the selected color tokens and stay readable.
+- Use this style-specific `::selection` treatment for Glassmorphism. It should follow the selected color tokens and stay readable.
 ```css
-/* Dashboard selection: calm data highlight. */
+/* Glassmorphism selection: frosted tint. */
 ::selection {
-  background-color: #bbe1fa;
-  color: #0b1820;
-  text-shadow: none;
+  background-color: #ddf7f7;
+  color: #1f4f50;
+  text-shadow: 0 1px 14px #f6ffff;
 }
 ```
 - If the selected color changes, keep the same style behavior but re-check text/background contrast.
@@ -210,11 +213,11 @@ Use semantic tokens first. Raw values from frontmatter are source values, not pe
 - Do not finish with invisible text, hidden CTAs, empty hero areas, or decorative backgrounds replacing product content.
 
 ### Typography
-- Primary family: Source Sans 3, system-ui, sans-serif.
-- Display family: Source Sans 3, system-ui, sans-serif.
+- Primary family: Manrope, system-ui, sans-serif.
+- Display family: Manrope, system-ui, sans-serif.
 - Monospace family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace.
 - Allowed weights: 300, 400, 500, 600.
-- Default UI weight: 500.
+- Default UI weight: 600.
 - Keep heading levels semantic. Visual size must follow layout importance, not HTML heading number.
 - Keep letter spacing at 0 by default. Use uppercase labels sparingly and only for short metadata.
 
@@ -267,14 +270,13 @@ Clear, concise, implementation-focused, low-jargon, and helpful without being de
 - define default, hover, active, focus-visible, disabled, loading, success, and error states.
 - design mobile-first, then enhance for tablet and desktop density.
 - keep implementation guidance portable across React, Vue, Svelte, plain HTML/CSS, and mobile UI stacks.
-- prioritize data visibility and scannability above all else.
-- use consistent card structure and spacing for all dashboard widgets.
-- make key metrics immediately visible in the first viewport.
-- provide clear labels, units, and context for all data points.
-- use color semantically for status, trends, and categories.
-- keep filters and actions contextually near the data they affect.
-- design both hover and keyboard focus states for cards, filters, tabs, menus, and chart controls.
-- keep responsive behavior practical: cards stack, tables scroll horizontally when needed, and key actions remain reachable.
+- use glass where layering adds context: media-backed heroes, frosted nav, app menus, finance cards, pricing overlays, product previews, dialogs, and featured cards.
+- protect text with scrims, tint, stable panels, or stronger foreground tokens.
+- include borders, tint, shadow, inner highlight, and fallback surfaces for glass panels.
+- preserve product content while improving atmosphere, depth, and scan speed.
+- verify contrast after every blur, opacity, blend-mode, background, or glow change.
+- use real images, screenshots, maps, products, payment cards, app icons, or meaningful visual anchors when the existing project provides them.
+- prefer consistent acrylic rectangles and frosted cards over liquid blobs or refractive lens shapes.
 
 ## Rules: Don't
 - use low-contrast text, hidden focus indicators, or color-only state communication.
@@ -283,14 +285,14 @@ Clear, concise, implementation-focused, low-jargon, and helpful without being de
 - mix unrelated visual metaphors in the same screen.
 - depend on framework-specific component names in design rules.
 - add decorative motion without reduced-motion fallbacks.
-- use decorative elements that compete with data for attention.
-- hide important metrics below the fold without a clear scroll path.
-- use inconsistent card sizes or spacing that makes the grid feel random.
-- add animations or effects that slow down data scanning.
-- use low-contrast text for labels or data values.
-- overload a single card with too many data points or charts.
-- use landing-page hero patterns, oversized marketing copy, or decorative illustrations in place of useful dashboard content.
-- remove filters, legends, table controls, or drill-down affordances to make the interface look cleaner.
+- turn the page into a grid of identical glass cards just because Bento uses modules.
+- place text directly on busy translucent backgrounds without a scrim or stable panel.
+- use blur as a substitute for layout, hierarchy, or content grouping.
+- make every section translucent until depth loses meaning.
+- depend on backdrop-filter without a readable fallback.
+- hide real media, CTA paths, forms, or navigation behind decorative glow.
+- use low-opacity white text on light glass or low-opacity dark text on dark glass.
+- imitate Liquid Glass with irregular refractive blobs, specular lens distortion, or physics-like material when this style should be frosted acrylic.
 
 ## AI Implementation Checklist
 - Read this file before changing UI, layout, component styling, or interaction behavior.

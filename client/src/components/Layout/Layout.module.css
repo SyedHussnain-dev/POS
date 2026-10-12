@@ -9,3 +9,5 @@
   padding: var(--space-xl);
   min-height: calc(100vh - var(--topbar-height));
 }
+
+.layout { background: radial-gradient(circle at 6% 5%, rgba(255,196,160,.45), transparent 30rem), var(--slate-950); }

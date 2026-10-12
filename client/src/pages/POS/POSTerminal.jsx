@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import {
   Search, ShoppingCart, Trash2, Plus, Minus, Tag,
   CreditCard, Banknote, QrCode, PauseCircle, Zap,
-  Package, X, Receipt, AlertTriangle, CheckCircle2, Printer, Download,
+  Package, X, Receipt, AlertTriangle, CheckCircle2, Printer, Download, ListFilter, UtensilsCrossed, ClipboardList,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import api from '../../api/axios';
@@ -373,6 +373,22 @@ export default function POSTerminal() {
             />
           </div>
 
+          <select
+            className={styles.quickSelect}
+            value={category}
+            onChange={(event) => setCategory(event.target.value)}
+            aria-label="Filter by category"
+          >
+            {CATEGORIES.map((item) => <option key={item} value={item}>{item === 'All' ? 'All Categories' : item}</option>)}
+          </select>
+
+          <button className={styles.outlineAction} onClick={() => setShowHeld(true)}>
+            <ClipboardList size={15} /> Draft list
+          </button>
+          <button className={styles.outlineAction} onClick={() => setShowShift(true)}>
+            <UtensilsCrossed size={15} /> Table order
+          </button>
+
           <div className={styles.toolbarActions}>
             <button
               className={styles.toolBtn}
@@ -395,6 +411,7 @@ export default function POSTerminal() {
 
         {/* Category Tabs */}
         <div className={styles.categoryBar}>
+          <span className={styles.filterLabel}><ListFilter size={14} /> Menu</span>
           {CATEGORIES.map((c) => (
             <button
               key={c}
@@ -564,6 +581,15 @@ export default function POSTerminal() {
           </div>
         )}
 
+        <div className={styles.orderActions}>
+          <button className={styles.draftAction} onClick={handleHoldCart} disabled={!cartItems.length}>
+            <PauseCircle size={16} /> Draft
+          </button>
+          <button className={styles.printAction} onClick={() => setShowHeld(true)}>
+            <Printer size={16} /> KOT & Print
+          </button>
+        </div>
+
         {/* Totals */}
         {cartItems.length > 0 && (
           <div className={styles.totals}>
@@ -594,7 +620,7 @@ export default function POSTerminal() {
           title="Checkout (F8)"
         >
           <Zap size={18} />
-          {cartItems.length > 0 ? `Checkout · $${grandTotal.toFixed(2)}` : 'Add items to checkout'}
+          {cartItems.length > 0 ? `Go to Payment · $${grandTotal.toFixed(2)}` : 'Add items to checkout'}
         </button>
 
         {/* Hotkey hints */}

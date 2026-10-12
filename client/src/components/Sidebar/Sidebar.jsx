@@ -5,6 +5,7 @@ import {
   Store, ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
+import { useAuth } from '../../context/AuthContext';
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -15,6 +16,7 @@ const navItems = [
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const { user, logout } = useAuth();
 
   return (
     <aside className={`${styles.sidebar} ${collapsed ? styles.collapsed : ''}`}>
@@ -22,8 +24,15 @@ export default function Sidebar() {
         <div className={styles.logoMark}>
           <Store size={20} />
         </div>
-        {!collapsed && <span className={styles.brandText}>POS System</span>}
+        {!collapsed && <span className={styles.brandText}>RestroBit</span>}
       </div>
+
+      {!collapsed && user && (
+        <div className={styles.profile}>
+          {user.avatarUrl ? <img src={user.avatarUrl} alt="" className={styles.profileAvatar} /> : <span className={styles.profileFallback}>{user.name?.[0]}</span>}
+          <span><strong>{user.name}</strong><small>{user.role.replaceAll('_', ' ')}</small></span>
+        </div>
+      )}
 
       <nav className={styles.nav}>
         {navItems.map(({ to, label, icon: Icon }) => (
@@ -47,6 +56,7 @@ export default function Sidebar() {
       >
         {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
       </button>
+      {!collapsed && <button className={styles.logoutBtn} onClick={logout}>Log out</button>}
     </aside>
   );
 }
