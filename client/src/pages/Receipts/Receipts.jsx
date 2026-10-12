@@ -5,6 +5,20 @@ import Modal from '../../components/Modal/Modal';
 import { generateReceiptPDF } from '../../utils/receiptHelper';
 import styles from './Receipts.module.css';
 
+const toReceipt = (order) => ({
+  ...order,
+  receiptNumber: order.orderNumber,
+  paymentMethod: order.payments?.map((payment) => payment.method).join(' + ') || 'N/A',
+  tax: order.taxTotal,
+  discount: order.discountTotal,
+  items: (order.items || []).map((item) => ({
+    ...item,
+    qty: item.quantity,
+    price: item.unitPrice,
+    total: item.subtotal,
+  })),
+});
+
 function Receipts() {
   const [receipts, setReceipts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,8 +27,8 @@ function Receipts() {
 
   useEffect(() => {
     api
-      .get('/receipts')
-      .then((res) => setReceipts(res.data.data))
+      .get('/orders', { params: { status: 'COMPLETED' } })
+      .then((res) => setReceipts(res.data.data.map(toReceipt)))
       .catch((err) => console.error('Fetch receipts error:', err))
       .finally(() => setLoading(false));
   }, []);
@@ -23,8 +37,8 @@ function Receipts() {
     setDetailLoading(true);
     setSelected(receipt);
     try {
-      const res = await api.get(`/receipts/${receipt._id}`);
-      setSelected(res.data.data);
+      const res = await api.get(`/orders/${receipt._id}`);
+      setSelected(toReceipt(res.data.data));
     } catch (err) {
       console.error('Fetch receipt detail error:', err);
     } finally {

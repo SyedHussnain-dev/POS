@@ -14,6 +14,7 @@ import authRoutes from './routes/authRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import shiftRoutes from './routes/shiftRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
+import reportRoutes from './routes/reportRoutes.js';
 
 // ── Connect to database ──
 connectDB();
@@ -60,6 +61,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/shifts', shiftRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/reports', reportRoutes);
 app.use('/api/items', itemRoutes);
 app.use('/api/receipts', receiptRoutes);
 

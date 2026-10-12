@@ -62,7 +62,10 @@ export const pinSwitch = async (req, res) => {
       return res.status(400).json({ success: false, message: 'A 4-digit PIN is required' });
     }
 
-    const user = await User.findOne({ pin });
+    const staff = await User.find();
+    const user = (await Promise.all(staff.map(async (staffMember) => (
+      await staffMember.comparePin(pin) ? staffMember : null
+    )))).find(Boolean);
     if (!user) {
       return res.status(401).json({ success: false, message: 'Incorrect PIN' });
     }

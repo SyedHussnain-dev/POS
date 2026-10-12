@@ -1,9 +1,11 @@
 import Order from '../models/Order.js';
 import Product from '../models/Product.js';
 import Shift from '../models/Shift.js';
+import mongoose from 'mongoose';
 
 // ── Create Completed Order ──
 export const createOrder = async (req, res) => {
+  const session = await mongoose.startSession();
   try {
     const {
       items,
@@ -21,73 +23,84 @@ export const createOrder = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Order must contain at least one item' });
     }
 
-    if (grandTotal === undefined || grandTotal === null) {
-      return res.status(400).json({ success: false, message: 'grandTotal is required' });
-    }
-
     const cashierId = req.user?._id || req.body.cashierId;
-
-    // Determine active shift if not explicitly provided
-    let shiftId = customShiftId;
-    if (!shiftId && cashierId) {
-      const activeShift = await Shift.findOne({ cashierId, status: 'OPEN' });
-      if (activeShift) {
-        shiftId = activeShift._id;
-      }
-    } else if (!shiftId) {
-      const anyOpenShift = await Shift.findOne({ status: 'OPEN' });
-      if (anyOpenShift) shiftId = anyOpenShift._id;
+    if (!cashierId) {
+      return res.status(401).json({ success: false, message: 'Authentication is required to complete a sale' });
     }
 
-    const orderNumber = `ORD-${Date.now().toString().slice(-8)}`;
+    let order;
+    await session.withTransaction(async () => {
+      const shiftFilter = { cashierId, status: 'OPEN' };
+      if (customShiftId) shiftFilter._id = customShiftId;
+      const shift = await Shift.findOne(shiftFilter).session(session);
+      if (!shift) throw new Error('Open a register shift before completing a sale');
 
-    const order = await Order.create({
-      orderNumber,
-      cashierId,
-      shiftId,
-      items,
-      subtotal: Number(subtotal),
-      taxTotal: Number(taxTotal),
-      discountTotal: Number(discountTotal),
-      grandTotal: Number(grandTotal),
-      payments,
-      changeGiven: Number(changeGiven),
-      customer: customer || { name: 'Walk-in Customer' },
-      status: 'COMPLETED',
-    });
-
-    // ── Deduct inventory stock ──
-    for (const line of items) {
-      if (line.productId) {
-        await Product.findByIdAndUpdate(line.productId, {
-          $inc: { stockQuantity: -line.quantity },
+      const normalizedItems = [];
+      for (const line of items) {
+        if (!line.productId || !Number.isInteger(Number(line.quantity)) || Number(line.quantity) < 1) {
+          throw new Error('Each cart item must have a valid product and quantity');
+        }
+        const product = await Product.findOneAndUpdate(
+          { _id: line.productId, isAvailable: true, stockQuantity: { $gte: Number(line.quantity) } },
+          { $inc: { stockQuantity: -Number(line.quantity) } },
+          { new: true, session }
+        );
+        if (!product) throw new Error(`Insufficient stock for an item in this cart`);
+        const unitPrice = Number(product.sellingPrice);
+        const quantity = Number(line.quantity);
+        normalizedItems.push({
+          productId: product._id,
+          name: product.name,
+          quantity,
+          unitPrice,
+          subtotal: Number((unitPrice * quantity).toFixed(2)),
+          taxRate: Number(product.taxRate || 0),
         });
       }
-    }
 
-    // ── Update Shift Register Totals ──
-    if (shiftId) {
-      let cashAmount = 0;
-      for (const p of payments) {
-        if (p.method === 'CASH') {
-          cashAmount += p.amount;
-        }
+      const calculatedSubtotal = Number(normalizedItems.reduce((sum, line) => sum + line.subtotal, 0).toFixed(2));
+      const calculatedTax = Number(normalizedItems.reduce((sum, line) => sum + (line.subtotal * line.taxRate) / 100, 0).toFixed(2));
+      const safeDiscount = Number(discountTotal || 0);
+      if (safeDiscount < 0 || safeDiscount > calculatedSubtotal) throw new Error('Invalid discount amount');
+      const calculatedGrandTotal = Number((calculatedSubtotal - safeDiscount + calculatedTax).toFixed(2));
+      const safeChange = Number(changeGiven || 0);
+      const paymentTotal = Number(payments.reduce((total, payment) => total + Number(payment.amount || 0), 0).toFixed(2));
+      if (!payments.length || safeChange < 0 || Math.abs(paymentTotal - safeChange - calculatedGrandTotal) > 0.009) {
+        throw new Error('Payments less change must equal the order total');
       }
-      // Deduct change given in cash
-      const netCashReceived = Math.max(0, cashAmount - Number(changeGiven || 0));
 
-      await Shift.findByIdAndUpdate(shiftId, {
+      const storedItems = normalizedItems.map(({ taxRate: _taxRate, ...line }) => line);
+      const orderNumber = `ORD-${Date.now().toString().slice(-8)}-${Math.floor(Math.random() * 1000)}`;
+      [order] = await Order.create([{
+        orderNumber,
+        cashierId,
+        shiftId: shift._id,
+        items: storedItems,
+        subtotal: calculatedSubtotal,
+        taxTotal: calculatedTax,
+        discountTotal: safeDiscount,
+        grandTotal: calculatedGrandTotal,
+        payments,
+        changeGiven: safeChange,
+        customer: customer || { name: 'Walk-in Customer' },
+        status: 'COMPLETED',
+      }], { session });
+
+      const cashTendered = payments.reduce((sum, payment) => payment.method === 'CASH' ? sum + Number(payment.amount) : sum, 0);
+      await Shift.findByIdAndUpdate(shift._id, {
         $inc: {
-          totalSales: Number(grandTotal),
+          totalSales: calculatedGrandTotal,
           totalTransactions: 1,
-          expectedCash: Number(netCashReceived),
+          expectedCash: Number((cashTendered - safeChange).toFixed(2)),
         },
-      });
-    }
+      }, { session });
+    });
 
     res.status(201).json({ success: true, data: order });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
+  } finally {
+    await session.endSession();
   }
 };
 
@@ -109,6 +122,13 @@ export const holdCart = async (req, res) => {
     }
 
     const cashierId = req.user?._id || req.body.cashierId;
+    if (!cashierId) {
+      return res.status(401).json({ success: false, message: 'Authentication is required to hold a cart' });
+    }
+    const heldCount = await Order.countDocuments({ cashierId, status: 'HELD' });
+    if (heldCount >= 10) {
+      return res.status(400).json({ success: false, message: 'A cashier can hold up to 10 carts' });
+    }
     const orderNumber = `HOLD-${Date.now().toString().slice(-6)}`;
 
     const order = await Order.create({
@@ -131,9 +151,9 @@ export const holdCart = async (req, res) => {
 };
 
 // ── Get All Held Carts ──
-export const getHeldCarts = async (_req, res) => {
+export const getHeldCarts = async (req, res) => {
   try {
-    const held = await Order.find({ status: 'HELD' }).sort({ createdAt: -1 });
+    const held = await Order.find({ cashierId: req.user._id, status: 'HELD' }).sort({ createdAt: -1 });
     res.json({ success: true, count: held.length, data: held });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -143,7 +163,7 @@ export const getHeldCarts = async (_req, res) => {
 // ── Resume or Delete Held Cart ──
 export const deleteHeldCart = async (req, res) => {
   try {
-    const held = await Order.findOneAndDelete({ _id: req.params.id, status: 'HELD' });
+    const held = await Order.findOneAndDelete({ _id: req.params.id, cashierId: req.user._id, status: 'HELD' });
     if (!held) {
       return res.status(404).json({ success: false, message: 'Held cart not found' });
     }
@@ -196,9 +216,10 @@ export const getOrderStats = async (_req, res) => {
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
 
-    const [todayOrders, allCompleted] = await Promise.all([
+    const [todayOrders, allCompleted, recentOrders] = await Promise.all([
       Order.find({ createdAt: { $gte: todayStart }, status: 'COMPLETED' }),
       Order.find({ status: 'COMPLETED' }),
+      Order.find({ status: 'COMPLETED' }).sort({ createdAt: -1 }).limit(5),
     ]);
 
     const todayRevenue = todayOrders.reduce((sum, o) => sum + (o.grandTotal || 0), 0);
@@ -234,6 +255,7 @@ export const getOrderStats = async (_req, res) => {
           card: cardCount,
           qr: qrCount,
         },
+        recentOrders,
       },
     });
   } catch (err) {

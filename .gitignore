@@ -4,3 +4,5 @@ node_modules
 *.env
 dist
 .DS_Store
+next_gen_pos_plan.md
+.gitignore

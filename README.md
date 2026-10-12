@@ -26,9 +26,9 @@ POS/
 │   └── vite.config.js
 ├── server/                 # Backend Node.js / Express API
 │   ├── config/             # Database connection (Mongoose)
-│   ├── controllers/        # Request controllers (Items, Receipts, Stats)
-│   ├── models/             # Mongoose schemas (Item, Receipt)
-│   ├── routes/             # Express API routes (/api/items, /api/receipts)
+│   ├── controllers/        # Auth, products, shifts, orders, and reports
+│   ├── models/             # User, Product, Shift, and Order schemas
+│   ├── routes/             # REST routes for the POS workflow
 │   ├── seed.js             # Initial database seed script
 │   └── server.js           # Express app entrypoint with CORS & health checks
 ├── package.json            # Root workspace scripts
@@ -39,11 +39,10 @@ POS/
 
 ## 🛠️ Features
 
-- **Dashboard:** Real-time KPI metrics (Revenue, Items Sold, Receipts) and sales overview.
-- **POS Terminal:** Interactive category filters, product search, cart calculation, discount/tax handling, and instant checkout.
-- **Receipts:** Historical transaction logs and downloadable 80mm PDF receipts.
-- **Items Management:** Complete inventory CRUD with real-time stock updates.
-- **Automated Stock Deduction:** Completing a sale automatically decrements item inventory in MongoDB.
+- **Secure cashier flow:** JWT login, PIN fast switching, terminal locking, and role-protected inventory actions.
+- **POS Terminal:** Scanner input, hotkeys, held carts, discounts, shift-gated checkout, split tender, and 3D payment/product views.
+- **Receipts and reporting:** Printable/downloadable 80mm receipts, order history, sales analytics, and Z-report data.
+- **Inventory integrity:** Product CRUD plus transaction-backed stock deduction during checkout.
 
 ---
 

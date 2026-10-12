@@ -1,5 +1,6 @@
 .layout {
   min-height: 100vh;
+  background: var(--slate-950);
 }
 
 .main {
@@ -8,4 +9,3 @@
   padding: var(--space-xl);
   min-height: calc(100vh - var(--topbar-height));
 }
-

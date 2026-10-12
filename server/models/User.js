@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, required: true },
-    pin: { type: String, required: true, minlength: 4, maxlength: 4 },
+    pin: { type: String, required: true, minlength: 4, maxlength: 72 },
     role: {
       type: String,
       enum: ['SUPER_ADMIN', 'STORE_MANAGER', 'CASHIER', 'INVENTORY_SPECIALIST'],
@@ -24,7 +24,8 @@ userSchema.methods.comparePassword = async function (enteredPassword) {
 };
 
 // ── PIN Comparison ──
-userSchema.methods.comparePin = function (enteredPin) {
+userSchema.methods.comparePin = async function (enteredPin) {
+  if (this.pin.startsWith('$2')) return bcrypt.compare(enteredPin, this.pin);
   return this.pin === enteredPin;
 };
 

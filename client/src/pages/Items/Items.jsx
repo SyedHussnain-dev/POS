@@ -25,6 +25,11 @@ const columns = [
 ];
 
 const emptyForm = { name: '', price: '', category: 'General', stock: '', barcode: '' };
+const toItem = (product) => ({
+  ...product,
+  price: product.sellingPrice,
+  stock: product.stockQuantity,
+});
 
 function Items() {
   const [items, setItems] = useState([]);
@@ -43,8 +48,8 @@ function Items() {
     if (category !== 'All') params.category = category;
 
     api
-      .get('/items', { params })
-      .then((res) => setItems(res.data.data))
+      .get('/products', { params })
+      .then((res) => setItems(res.data.data.map(toItem)))
       .catch((err) => console.error('Fetch items error:', err))
       .finally(() => setLoading(false));
   }, [search, category]);
@@ -74,7 +79,7 @@ function Items() {
   const handleDelete = async (item) => {
     if (!window.confirm(`Delete "${item.name}"?`)) return;
     try {
-      await api.delete(`/items/${item._id}`);
+      await api.delete(`/products/${item._id}`);
       fetchItems();
     } catch (err) {
       console.error('Delete error:', err);
@@ -86,15 +91,21 @@ function Items() {
     setSaving(true);
     try {
       const payload = {
-        ...form,
-        price: Number(form.price),
-        stock: Number(form.stock),
+        name: form.name,
+        category: form.category,
+        barcode: form.barcode || `MANUAL-${Date.now()}`,
+        sku: editing?.sku || `MAN-${Date.now()}`,
+        sellingPrice: Number(form.price),
+        costPrice: Number((Number(form.price) * 0.6).toFixed(2)),
+        stockQuantity: Number(form.stock),
+        reorderLevel: editing?.reorderLevel ?? 10,
+        taxRate: editing?.taxRate ?? 0,
       };
 
       if (editing) {
-        await api.put(`/items/${editing._id}`, payload);
+        await api.put(`/products/${editing._id}`, payload);
       } else {
-        await api.post('/items', payload);
+        await api.post('/products', payload);
       }
       setShowModal(false);
       fetchItems();

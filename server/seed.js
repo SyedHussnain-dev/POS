@@ -231,6 +231,7 @@ async function seed() {
       usersToInsert.push({
         ...u,
         password: hashedPassword,
+        pin: await bcrypt.hash(u.pin, 10),
       });
     }
     const createdUsers = await User.insertMany(usersToInsert);

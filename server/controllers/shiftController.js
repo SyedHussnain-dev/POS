@@ -73,6 +73,8 @@ export const getCurrentShift = async (req, res) => {
       }
     }
 
+    totalCashReceived -= orders.reduce((sum, order) => sum + Number(order.changeGiven || 0), 0);
+
     const expectedCash = Number((shift.openingFloat + totalCashReceived).toFixed(2));
 
     res.json({
@@ -104,7 +106,7 @@ export const closeShift = async (req, res) => {
 
     let shift;
     if (shiftId) {
-      shift = await Shift.findById(shiftId);
+      shift = await Shift.findOne({ _id: shiftId, cashierId, status: 'OPEN' });
     } else if (cashierId) {
       shift = await Shift.findOne({ cashierId, status: 'OPEN' });
     }
@@ -128,6 +130,8 @@ export const closeShift = async (req, res) => {
         else totalOtherReceived += p.amount;
       }
     }
+
+    totalCashReceived -= orders.reduce((sum, order) => sum + Number(order.changeGiven || 0), 0);
 
     const expectedCash = Number((shift.openingFloat + totalCashReceived).toFixed(2));
     const cashDiff = Number((Number(actualCash) - expectedCash).toFixed(2));

@@ -14,17 +14,17 @@ export const generateReceiptPDF = (receipt, action = 'download') => {
   doc.text('POS SYSTEM', 40, 10, { align: 'center' });
 
   doc.setFontSize(9);
-  doc.text(`Receipt #: ${receipt.receiptNumber}`, 40, 16, { align: 'center' });
+  doc.text(`Order #: ${receipt.orderNumber || receipt.receiptNumber || 'Pending'}`, 40, 16, { align: 'center' });
   
   const date = new Date(receipt.createdAt).toLocaleString('en-US');
   doc.text(`Date: ${date}`, 40, 20, { align: 'center' });
 
   // Items table
-  const tableData = receipt.items.map(item => [
+  const tableData = (receipt.items || []).map(item => [
     item.name,
-    item.qty.toString(),
-    `$${item.price.toFixed(2)}`,
-    `$${item.total.toFixed(2)}`
+    String(item.quantity ?? item.qty ?? 0),
+    `$${Number(item.unitPrice ?? item.price ?? 0).toFixed(2)}`,
+    `$${Number(item.subtotal ?? item.total ?? 0).toFixed(2)}`
   ]);
 
   autoTable(doc, {
@@ -56,23 +56,28 @@ export const generateReceiptPDF = (receipt, action = 'download') => {
   doc.text(`$${receipt.subtotal.toFixed(2)}`, 76, finalY, { align: 'right' });
   finalY += 5;
 
-  if (receipt.discount > 0) {
+  const discount = Number(receipt.discountTotal ?? receipt.discount ?? 0);
+  const tax = Number(receipt.taxTotal ?? receipt.tax ?? 0);
+  if (discount > 0) {
     doc.text('Discount:', 4, finalY);
-    doc.text(`-$${receipt.discount.toFixed(2)}`, 76, finalY, { align: 'right' });
+    doc.text(`-$${discount.toFixed(2)}`, 76, finalY, { align: 'right' });
     finalY += 5;
   }
 
-  doc.text('Tax (8%):', 4, finalY);
-  doc.text(`$${receipt.tax.toFixed(2)}`, 76, finalY, { align: 'right' });
+  doc.text('Tax:', 4, finalY);
+  doc.text(`$${tax.toFixed(2)}`, 76, finalY, { align: 'right' });
   finalY += 5;
 
   doc.setFont('helvetica', 'bold');
   doc.text('Grand Total:', 4, finalY);
-  doc.text(`$${receipt.grandTotal.toFixed(2)}`, 76, finalY, { align: 'right' });
+  doc.text(`$${Number(receipt.grandTotal || 0).toFixed(2)}`, 76, finalY, { align: 'right' });
   finalY += 5;
 
   doc.setFont('helvetica', 'normal');
-  doc.text(`Payment: ${receipt.paymentMethod.toUpperCase()}`, 40, finalY + 4, { align: 'center' });
+  const paymentSummary = (receipt.payments || [])
+    .map((payment) => `${payment.method}: $${Number(payment.amount).toFixed(2)}`)
+    .join(' • ') || String(receipt.paymentMethod || 'N/A').toUpperCase();
+  doc.text(`Payment: ${paymentSummary}`, 40, finalY + 4, { align: 'center', maxWidth: 70 });
   doc.text('Thank you for your business!', 40, finalY + 12, { align: 'center' });
 
   if (action === 'print') {
@@ -80,6 +85,6 @@ export const generateReceiptPDF = (receipt, action = 'download') => {
     const blob = doc.output('bloburl');
     window.open(blob, '_blank');
   } else {
-    doc.save(`receipt-${receipt.receiptNumber}.pdf`);
+    doc.save(`receipt-${receipt.orderNumber || receipt.receiptNumber || 'order'}.pdf`);
   }
 };

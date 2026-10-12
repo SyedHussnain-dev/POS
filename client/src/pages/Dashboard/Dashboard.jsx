@@ -10,7 +10,7 @@ function Dashboard() {
 
   useEffect(() => {
     api
-      .get('/receipts/stats')
+      .get('/orders/stats')
       .then((res) => setStats(res.data.data))
       .catch((err) => console.error('Dashboard fetch error:', err))
       .finally(() => setLoading(false));
@@ -48,25 +48,25 @@ function Dashboard() {
     {
       icon: DollarSign,
       label: "Today's Sales",
-      value: `$${stats.todaySales.toFixed(2)}`,
+      value: `$${stats.todayRevenue.toFixed(2)}`,
       color: 'var(--color-success)',
     },
     {
       icon: Package,
-      label: 'Total Items',
-      value: stats.totalItems,
+      label: 'Items Sold',
+      value: stats.totalProductsSold,
       color: 'var(--color-primary)',
     },
     {
       icon: Users,
       label: 'Customers Served',
-      value: stats.totalReceipts,
+      value: stats.todayOrdersCount,
       color: 'var(--color-warning)',
     },
     {
       icon: FileText,
-      label: 'Receipts',
-      value: stats.totalReceipts,
+      label: 'All Orders',
+      value: stats.totalOrdersCount,
       color: 'var(--color-border)',
     },
   ];
@@ -82,7 +82,7 @@ function Dashboard() {
       <section className={styles.recentSection}>
         <h2 className={styles.sectionTitle}>Recent Transactions</h2>
 
-        {stats.recentReceipts.length === 0 ? (
+        {stats.recentOrders.length === 0 ? (
           <div className={styles.emptyState}>
             <p>No transactions yet. Create one from the POS Terminal.</p>
           </div>
@@ -99,9 +99,9 @@ function Dashboard() {
                 </tr>
               </thead>
               <tbody>
-                {stats.recentReceipts.map((r) => (
+                {stats.recentOrders.map((r) => (
                   <tr key={r._id}>
-                    <td className={styles.mono}>{r.receiptNumber}</td>
+                    <td className={styles.mono}>{r.orderNumber}</td>
                     <td>{r.items?.length || 0}</td>
                     <td className={styles.amount}>
                       ${r.grandTotal.toFixed(2)}
@@ -109,9 +109,9 @@ function Dashboard() {
                     <td>
                       <span
                         className={styles.badge}
-                        data-method={r.paymentMethod}
+                        data-method={r.payments?.[0]?.method}
                       >
-                        {r.paymentMethod}
+                        {r.payments?.map((payment) => payment.method).join(' + ') || 'N/A'}
                       </span>
                     </td>
                     <td className={styles.dateCell}>
