@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { DollarSign, Package, FileText, Users } from 'lucide-react';
+import { DollarSign, Package, FileText } from 'lucide-react';
 import api from '../../api/axios';
 import KPICard from '../../components/KPICard/KPICard';
 import styles from './Dashboard.module.css';
@@ -53,15 +53,9 @@ function Dashboard() {
     },
     {
       icon: Package,
-      label: 'Items Sold',
+      label: 'Total Items Sold',
       value: stats.totalProductsSold,
       color: 'var(--color-primary)',
-    },
-    {
-      icon: Users,
-      label: 'Customers Served',
-      value: stats.todayOrdersCount,
-      color: 'var(--color-warning)',
     },
     {
       icon: FileText,
