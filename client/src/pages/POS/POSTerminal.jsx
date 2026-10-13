@@ -7,7 +7,7 @@ import {
 import confetti from 'canvas-confetti';
 import api from '../../api/axios';
 import { useCart } from '../../context/CartContext';
-import { useAuth } from '../../context/AuthContext';
+import { usePos } from '../../context/PosContext';
 import PaymentTerminal3D from '../../components/Three/PaymentTerminal3D';
 import ProductViewer3D from '../../components/Three/ProductViewer3D';
 import HeldCartsModal from '../../components/HeldCartsModal/HeldCartsModal';
@@ -30,14 +30,14 @@ export default function POSTerminal() {
     addToCart, updateQty, removeFromCart, clearCart,
     setDiscountPercent, holdCurrentCart,
   } = useCart();
-  const { activeShift } = useAuth();
+  const { activeShift } = usePos();
 
   const [products, setProducts]           = useState([]);
   const [loading, setLoading]             = useState(true);
   const [search, setSearch]               = useState('');
   const [category, setCategory]           = useState('All');
   const [showPayment, setShowPayment]     = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('CASH');
+  const [paymentMethod, setPaymentMethod] = useState('');
   const [cashGiven, setCashGiven]         = useState('');
   const [splitPayments, setSplitPayments] = useState([]);
   const [processing, setProcessing]       = useState(false);
@@ -47,6 +47,7 @@ export default function POSTerminal() {
   const [showHeld, setShowHeld]           = useState(false);
   const [showShift, setShowShift]         = useState(false);
   const [discountInput, setDiscountInput] = useState('');
+  const [receiptError, setReceiptError]   = useState('');
 
   // ── Load Products ──
   const fetchProducts = useCallback(async () => {
@@ -72,7 +73,11 @@ export default function POSTerminal() {
       if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
       if (e.key === 'F2') document.getElementById('posSearch')?.focus();
       if (e.key === 'F4') handleHoldCart();
-      if (e.key === 'F8' && cartItems.length > 0) setShowPayment(true);
+      if (e.key === 'F8' && cartItems.length > 0) {
+        setPaymentMethod('');
+        setErrorMsg('');
+        setShowPayment(true);
+      }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
@@ -114,9 +119,6 @@ export default function POSTerminal() {
       setShowShift(true);
       return;
     }
-    setProcessing(true);
-    setErrorMsg('');
-
     const isSplit = splitPayments.length > 0;
     let payments;
 
@@ -127,6 +129,10 @@ export default function POSTerminal() {
         return;
       }
     } else {
+      if (!paymentMethod) {
+        setErrorMsg('Select a payment method before confirming payment.');
+        return;
+      }
       payments = [{
         method: paymentMethod,
         amount: paymentMethod === 'CASH' ? cashGivenNum : grandTotal,
@@ -135,6 +141,9 @@ export default function POSTerminal() {
         setErrorMsg('Enter the cash received before confirming payment.');
         return;
       }
+
+      setProcessing(true);
+      setErrorMsg('');
     }
 
     const payload = {
@@ -164,6 +173,8 @@ export default function POSTerminal() {
       setShowPayment(false);
       setSplitPayments([]);
       setCashGiven('');
+      setPaymentMethod('');
+      setReceiptError('');
       fetchProducts();
       // 🎉 Confetti
       confetti({ particleCount: 120, spread: 80, origin: { x: 0.7, y: 0.5 } });
@@ -171,6 +182,16 @@ export default function POSTerminal() {
       setErrorMsg(err.response?.data?.message || 'Checkout failed. Please try again.');
     } finally {
       setProcessing(false);
+    }
+  };
+
+  const handleReceiptAction = (action) => {
+    try {
+      generateReceiptPDF(successOrder, action);
+      setReceiptError('');
+    } catch (err) {
+      console.error(`Receipt ${action} failed:`, err);
+      setReceiptError(`Could not ${action === 'print' ? 'open the printable receipt' : 'download the receipt'}. Please try again.`);
     }
   };
 
@@ -184,13 +205,13 @@ export default function POSTerminal() {
       <div className={styles.paymentModal}>
         <div className={styles.modalHeader}>
           <h3>Complete Payment</h3>
-          <button onClick={() => { setShowPayment(false); setSplitPayments([]); }}>
+          <button onClick={() => { setShowPayment(false); setSplitPayments([]); setPaymentMethod(''); }}>
             <X size={20} />
           </button>
         </div>
 
         {/* 3D Terminal Canvas */}
-        <PaymentTerminal3D method={paymentMethod} grandTotal={grandTotal} />
+        <PaymentTerminal3D method={paymentMethod || 'CASH'} grandTotal={grandTotal} />
 
         {/* Payment Method Tabs */}
         <div className={styles.methodTabs}>
@@ -198,7 +219,7 @@ export default function POSTerminal() {
             <button
               key={id}
               className={`${styles.methodTab} ${paymentMethod === id ? styles.methodActive : ''}`}
-              onClick={() => { setPaymentMethod(id); setSplitPayments([]); }}
+              onClick={() => { setPaymentMethod(id); setSplitPayments([]); setErrorMsg(''); }}
             >
               <Icon size={18} /> {label}
             </button>
@@ -306,7 +327,12 @@ export default function POSTerminal() {
           <button
             className={styles.confirmBtn}
             onClick={handleCheckout}
-            disabled={processing || (paymentMethod === 'CASH' && splitPayments.length === 0 && cashGivenNum < grandTotal)}
+            disabled={
+              processing
+              || !paymentMethod
+              || (paymentMethod === 'CASH' && splitPayments.length === 0 && cashGivenNum < grandTotal)
+              || (splitPayments.length > 0 && Math.abs(splitTotal - grandTotal) > 0.009)
+            }
           >
             {processing ? 'Processing…' : `Confirm $${grandTotal.toFixed(2)}`}
           </button>
@@ -331,15 +357,16 @@ export default function POSTerminal() {
         </div>
         <button
           className={styles.newSaleBtn}
-          onClick={() => setSuccessOrder(null)}
+          onClick={() => { setSuccessOrder(null); setReceiptError(''); }}
         >
           New Sale
         </button>
+        {receiptError && <div className={styles.errorMsg}>{receiptError}</div>}
         <div className={styles.receiptActions}>
-          <button onClick={() => generateReceiptPDF(successOrder, 'print')}>
+          <button onClick={() => handleReceiptAction('print')}>
             <Printer size={15} /> Print receipt
           </button>
-          <button onClick={() => generateReceiptPDF(successOrder)}>
+          <button onClick={() => handleReceiptAction('download')}>
             <Download size={15} /> Download PDF
           </button>
         </div>
@@ -616,7 +643,15 @@ export default function POSTerminal() {
         <button
           className={styles.checkoutBtn}
           disabled={cartItems.length === 0}
-          onClick={() => activeShift ? setShowPayment(true) : setShowShift(true)}
+          onClick={() => {
+            if (activeShift) {
+              setPaymentMethod('');
+              setErrorMsg('');
+              setShowPayment(true);
+            } else {
+              setShowShift(true);
+            }
+          }}
           title="Checkout (F8)"
         >
           <Zap size={18} />
