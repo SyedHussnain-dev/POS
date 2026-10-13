@@ -8,7 +8,6 @@ import confetti from 'canvas-confetti';
 import api from '../../api/axios';
 import { useCart } from '../../context/CartContext';
 import { usePos } from '../../context/PosContext';
-import PaymentTerminal3D from '../../components/Three/PaymentTerminal3D';
 import ProductViewer3D from '../../components/Three/ProductViewer3D';
 import HeldCartsModal from '../../components/HeldCartsModal/HeldCartsModal';
 import ShiftModal from '../../components/ShiftModal/ShiftModal';
@@ -209,9 +208,6 @@ export default function POSTerminal() {
             <X size={20} />
           </button>
         </div>
-
-        {/* 3D Terminal Canvas */}
-        <PaymentTerminal3D method={paymentMethod || 'CASH'} grandTotal={grandTotal} />
 
         {/* Payment Method Tabs */}
         <div className={styles.methodTabs}>
