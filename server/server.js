@@ -10,14 +10,14 @@ import cors from 'cors';
 import connectDB from './config/db.js';
 import itemRoutes from './routes/itemRoutes.js';
 import receiptRoutes from './routes/receiptRoutes.js';
-import authRoutes from './routes/authRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import shiftRoutes from './routes/shiftRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import reportRoutes from './routes/reportRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 // ── Connect to database ──
-connectDB();
+await connectDB();
 
 const app = express();
 

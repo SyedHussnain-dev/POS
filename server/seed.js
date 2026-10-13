@@ -2,7 +2,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, '.env') });
@@ -15,30 +14,7 @@ import Order from './models/Order.js';
 import Item from './models/Item.js';
 import Receipt from './models/Receipt.js';
 
-// ── Demo Users from Spec ──
-const rawUsers = [
-  {
-    email: 'admin@pos.com',
-    password: 'AdminPassword123!',
-    pin: '1111',
-    name: 'System Administrator',
-    avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
-  },
-  {
-    email: 'manager@pos.com',
-    password: 'ManagerPassword123!',
-    pin: '2222',
-    name: 'Store Manager',
-    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80',
-  },
-  {
-    email: 'cashier@pos.com',
-    password: 'CashierPassword123!',
-    pin: '3333',
-    name: 'Alex Cashier',
-    avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80',
-  },
-];
+const localCashier = { email: 'cashier@pos.com', name: 'Local Cashier' };
 
 // ── Next-Gen Products Catalog ──
 const productsData = [
@@ -221,21 +197,10 @@ async function seed() {
     ]);
     console.log('Cleared existing collections.');
 
-    // ── Seed Users with Hashed Passwords ──
-    const usersToInsert = [];
-    for (const u of rawUsers) {
-      const hashedPassword = await bcrypt.hash(u.password, 10);
-      usersToInsert.push({
-        ...u,
-        password: hashedPassword,
-        pin: await bcrypt.hash(u.pin, 10),
-      });
-    }
-    const createdUsers = await User.insertMany(usersToInsert);
-    console.log(`Seeded ${createdUsers.length} staff users with bcrypt passwords & PINs.`);
+    const [cashierUser] = await User.create([localCashier]);
+    console.log('Seeded the local cashier record.');
 
     // ── Seed Products (assigned to cashier user) ──
-    const cashierUser = createdUsers.find((u) => u.email === 'cashier@pos.com');
     const productsWithOwner = productsData.map((p) => ({ ...p, userId: cashierUser._id }));
     const createdProducts = await Product.insertMany(productsWithOwner);
     console.log(`Seeded ${createdProducts.length} products across 5 categories.`);

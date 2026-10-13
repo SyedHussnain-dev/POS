@@ -8,11 +8,11 @@ import {
   getOrderById,
   getOrderStats,
 } from '../controllers/orderController.js';
-import { protect } from '../middleware/auth.js';
+import { useLocalCashier } from '../middleware/localCashier.js';
 
 const router = express.Router();
 
-router.use(protect);
+router.use(useLocalCashier);
 
 router.get('/stats', getOrderStats);
 router.get('/held', getHeldCarts);

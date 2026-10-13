@@ -5,11 +5,11 @@ import {
   closeShift,
   getShiftHistory,
 } from '../controllers/shiftController.js';
-import { protect } from '../middleware/auth.js';
+import { useLocalCashier } from '../middleware/localCashier.js';
 
 const router = express.Router();
 
-router.use(protect);
+router.use(useLocalCashier);
 
 router.post('/open', openShift);
 router.get('/current', getCurrentShift);

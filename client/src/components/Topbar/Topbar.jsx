@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Lock, Clock3, LogOut, TriangleAlert } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
+import { Clock3, TriangleAlert } from 'lucide-react';
+import { usePos } from '../../context/PosContext';
 import styles from './Topbar.module.css';
 
 const routeTitles = {
@@ -13,7 +13,7 @@ const routeTitles = {
 
 export default function Topbar() {
   const location = useLocation();
-  const { user, activeShift, setIsLocked, logout } = useAuth();
+  const { user, activeShift, logout } = usePos();
   const [dateTime, setDateTime] = useState(() => new Date());
 
   useEffect(() => {
@@ -70,24 +70,7 @@ export default function Topbar() {
             </div>
           </div>
         )}
-
-        {/* Lock terminal */}
-        <button
-          className={styles.iconBtn}
-          onClick={() => setIsLocked(true)}
-          title="Lock Terminal (Esc)"
-        >
-          <Lock size={17} />
-        </button>
-
-        {/* Logout */}
-        <button
-          className={`${styles.iconBtn} ${styles.iconBtnDanger}`}
-          onClick={logout}
-          title="Sign out"
-        >
-          <LogOut size={17} />
-        </button>
+        <button type="button" onClick={logout}>Sign out</button>
       </div>
     </header>
   );

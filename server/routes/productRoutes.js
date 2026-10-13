@@ -8,11 +8,11 @@ import {
   deleteProduct,
   getStockAlerts,
 } from '../controllers/productController.js';
-import { protect } from '../middleware/auth.js';
+import { useLocalCashier } from '../middleware/localCashier.js';
 
 const router = express.Router();
 
-router.use(protect);
+router.use(useLocalCashier);
 
 router.get('/alerts/low-stock', getStockAlerts);
 router.get('/barcode/:barcode', getProductByBarcode);

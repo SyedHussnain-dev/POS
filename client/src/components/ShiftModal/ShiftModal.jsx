@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import { usePos } from '../../context/PosContext';
 import { DollarSign, Clock, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import styles from './ShiftModal.module.css';
 
 export default function ShiftModal({ isOpen, onClose }) {
-  const { activeShift, openRegisterShift, closeRegisterShift, refreshShift, user } = useAuth();
+  const { activeShift, openRegisterShift, closeRegisterShift, refreshShift, user } = usePos();
   const [openingFloat, setOpeningFloat] = useState('150.00');
   const [actualCash, setActualCash] = useState('');
   const [loading, setLoading] = useState(false);

@@ -5,7 +5,7 @@ import {
   Store, ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
-import { useAuth } from '../../context/AuthContext';
+import { usePos } from '../../context/PosContext';
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -16,7 +16,7 @@ const navItems = [
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
-  const { user, logout } = useAuth();
+  const { user } = usePos();
 
   return (
     <aside className={`${styles.sidebar} ${collapsed ? styles.collapsed : ''}`}>
@@ -56,7 +56,6 @@ export default function Sidebar() {
       >
         {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
       </button>
-      {!collapsed && <button className={styles.logoutBtn} onClick={logout}>Log out</button>}
     </aside>
   );
 }

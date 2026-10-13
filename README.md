@@ -39,7 +39,7 @@ POS/
 
 ## 🛠️ Features
 
-- **Secure cashier flow:** JWT login, PIN fast switching, terminal locking, and role-protected inventory actions.
+- **Local cashier flow:** Sign in with the local cashier username and password before using the POS.
 - **POS Terminal:** Scanner input, hotkeys, held carts, discounts, shift-gated checkout, split tender, and 3D payment/product views.
 - **Receipts and reporting:** Printable/downloadable 80mm receipts, order history, sales analytics, and Z-report data.
 - **Inventory integrity:** Product CRUD plus transaction-backed stock deduction during checkout.
@@ -69,7 +69,7 @@ cd ../client && npm install
 **`server/.env`:**
 ```env
 PORT=5000
-MONGODB_URI=your_mongodb_connection_string
+MONGODB_URI=mongodb://127.0.0.1:27017/pos_system
 CLIENT_URL=http://localhost:5173
 ```
 
@@ -79,6 +79,8 @@ VITE_API_URL=http://localhost:5000/api
 ```
 
 ### 3. Seed Sample Data (Optional)
+
+The seed command clears and recreates the POS collections. Use it only with a fresh local database or after backing up data.
 ```bash
 npm run seed
 ```
@@ -90,6 +92,8 @@ npm run dev
 ```
 - Frontend: `http://localhost:5173`
 - Backend: `http://localhost:5000`
+
+The local cashier username is selected by `LOCAL_CASHIER_EMAIL` (defaults to `cashier@pos.com`). The default password is `CashierPassword123!`; override it with `LOCAL_CASHIER_PASSWORD` in the server environment. The seed command creates the cashier alongside sample products and sales data.
 
 ---
 
